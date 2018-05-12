@@ -27,6 +27,7 @@ import com.fenchtose.movieratings.features.moviecollection.collectionlist.Collec
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
+import com.fenchtose.movieratings.features.settings.SettingsFragment2
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -193,7 +194,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSettingsPage() {
-        router?.go(SettingsFragment.SettingsPath())
+        router?.go(SettingsFragment2.SettingsPath())
     }
 
     private fun showFavoritesPage() {

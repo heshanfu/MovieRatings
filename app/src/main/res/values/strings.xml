@@ -65,6 +65,15 @@
 	<string name="settings_export_data_dialog_positive_cta">Export</string>
 	<string name="settings_export_data_permission_title">Permission required</string>
 	<string name="settings_export_data_permission_content">The app needs access to file storage to export your data. Would you like to grant the permission?</string>
+	<string name="settings_app_section_title">Manage supported apps</string>
+	<string name="settings_app_section_subtitle">Manage preferences for apps &amp; rating display duration</string>
+	<string name="settings_data_and_privacy_section_title">Manage your data</string>
+	<string name="settings_data_and_privacy_section_subtitle">Set your privacy preferences and import/export data</string>
+	<string name="settings_tts_section_title">Configure Text to Speech</string>
+	<string name="settings_tts_section_subtitle">Take advantage of Flutter\'s TTS support</string>
+	<string name="settings_misc_section_title">Miscellaneous settings</string>
+	<string name="settings_misc_section_subtitle">Configure settings (include year in searches, etc)</string>
+	<string name="settings_app_section_page_header">Supported apps</string>
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>

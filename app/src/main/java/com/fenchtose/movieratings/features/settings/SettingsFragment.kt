@@ -43,8 +43,6 @@ class SettingsFragment: BasePermissionFragment() {
 
     private var preferences: UserPreferences? = null
 
-    private var ratingDurationView: TextView? = null
-
     private val CHECK_TTS = 12
 
     private val PERMISSION_FOR_EXPORT = 31
@@ -61,9 +59,7 @@ class SettingsFragment: BasePermissionFragment() {
 
         this.preferences = preferences
 
-        addAppToggle(preferences, view, R.id.netflix_toggle, UserPreferences.NETFLIX)
-        addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
-        addAppToggle(preferences, view, R.id.play_movies_toggle, UserPreferences.PLAY_MOVIES)
+
         addAppToggle(preferences, view, R.id.save_browsing_toggle, UserPreferences.SAVE_HISTORY)
         addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
         addAppToggle(preferences, view, R.id.use_year_toggle, UserPreferences.USE_YEAR)
@@ -90,24 +86,6 @@ class SettingsFragment: BasePermissionFragment() {
             }
         }
 
-        val ratingDurationSeekbar = view.findViewById<SeekBar>(R.id.rating_duration_seekbar)
-        ratingDurationView = view.findViewById(R.id.rating_duration_view)
-
-        val progress = preferences.getRatingDisplayDuration()/1000
-        ratingDurationView?.text = (progress).toString()
-        ratingDurationSeekbar?.progress = progress - 1
-
-        ratingDurationSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                updateRatingDisplayDuration((progress + 1) * 1000)
-            }
-        })
 
         view.findViewById<View>(R.id.clear_history_button).setOnClickListener { showClearHistoryDialog() }
         view.findViewById<View>(R.id.delete_data_button).setOnClickListener { showDeleteDataDialog() }
@@ -152,12 +130,6 @@ class SettingsFragment: BasePermissionFragment() {
     private fun updatePreference(preferences: UserPreferences, app: String, checked: Boolean) {
         preferences.setAppEnabled(app, checked)
         updatePublisher?.onNext(app)
-    }
-
-    private fun updateRatingDisplayDuration(durationInMs: Int) {
-        preferences?.setRatingDisplayDuration(durationInMs)
-        updatePublisher?.onNext("toast")
-        ratingDurationView?.text = (preferences!!.getRatingDisplayDuration()/1000).toString()
     }
 
     private fun showUpdatePreferenceSnackbar() {

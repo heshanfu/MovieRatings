@@ -4,7 +4,7 @@
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:background="@drawable/movie_page_add_to_collection_background"
-	android:textColor="@color/colorAccent"
+	android:textColor="@color/colorPrimary"
 	android:textSize="14sp"
 	android:paddingStart="16dp"
 	android:paddingEnd="16dp"

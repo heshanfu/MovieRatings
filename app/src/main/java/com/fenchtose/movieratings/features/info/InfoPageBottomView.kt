@@ -13,19 +13,17 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
+import com.fenchtose.movieratings.features.settings.SettingsFragment2
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.IntentUtils
 
 class InfoPageBottomView: LinearLayout {
-
-
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         LayoutInflater.from(context).inflate(R.layout.info_page_bottom_container_layout, this, true)
         orientation = LinearLayout.VERTICAL
-        setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
 
         val analytics = MovieRatingsApplication.analyticsDispatcher
 
@@ -57,7 +55,7 @@ class InfoPageBottomView: LinearLayout {
 
         val settingsView = findViewById<View?>(R.id.settings_view)
         settingsView?.setOnClickListener {
-            MovieRatingsApplication.router?.go(SettingsFragment.SettingsPath())
+            MovieRatingsApplication.router?.go(SettingsFragment2.SettingsPath())
         }
     }
 
