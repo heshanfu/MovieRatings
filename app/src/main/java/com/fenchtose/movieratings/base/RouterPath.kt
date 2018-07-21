@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.base
 
 import android.view.View
+import com.fenchtose.movieratings.base.redux.Action
+import com.fenchtose.movieratings.base.redux.NoAction
 import com.fenchtose.movieratings.base.router.Router
 
 abstract class RouterPath<T : BaseFragment> {
@@ -56,5 +58,7 @@ abstract class RouterPath<T : BaseFragment> {
     open fun showBackButton(): Boolean = true
 
     open fun getSharedTransitionElement(): Pair<View, String>? = null
+
+    open fun initAction(): Action = NoAction
 
 }

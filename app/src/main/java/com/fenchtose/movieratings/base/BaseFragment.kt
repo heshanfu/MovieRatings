@@ -1,10 +1,14 @@
 package com.fenchtose.movieratings.base
 
 import android.os.Bundle
+import android.support.annotation.CallSuper
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.View
+import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -14,9 +18,18 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
     private var disposables: CompositeDisposable? = null
     var path: RouterPath<out BaseFragment>? = null
 
+    private var unsubscribe: Unsubscribe? = null
+    protected var dispatch: Dispatch? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         disposables = CompositeDisposable()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        unsubscribe?.invoke()
+        dispatch = null
     }
 
     override fun onDestroy() {
@@ -48,6 +61,13 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
                     actionResId,
                     listener
             ).show()
+        }
+    }
+
+    protected fun render(render: (AppState, Dispatch) -> Unit) {
+        unsubscribe = MovieRatingsApplication.store.subscribe { state, dispatch ->
+            this.dispatch = dispatch
+            render(state, dispatch)
         }
     }
 
