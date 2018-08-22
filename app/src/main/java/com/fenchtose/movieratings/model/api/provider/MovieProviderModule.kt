@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class MovieProviderModule(val app: MovieRatingsApplication, val gson: Gson) {
 
@@ -21,7 +22,9 @@ class MovieProviderModule(val app: MovieRatingsApplication, val gson: Gson) {
         val retrofit = Retrofit.Builder()
                 .client(app.getOkHttpClient())
                 .baseUrl(Constants.OMDB_ENDPOINT)
+//                .addConverterFactory()
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 

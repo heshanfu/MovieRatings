@@ -9,13 +9,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieTypeConverter2 {
 
 	public static Gson gson = new Gson();
 
 	@TypeConverter
-	public static ArrayList<Rating> fromString(String data) {
+	public static List<Rating> fromString1(String data) {
 		JsonArray json = gson.fromJson(data, JsonElement.class).getAsJsonArray();
 		ArrayList<Rating> ratings = new ArrayList<>();
 		for (int i=0; i<json.size(); i++) {
@@ -26,7 +27,7 @@ public class MovieTypeConverter2 {
 	}
 
 	@TypeConverter
-	public static String listToString(ArrayList<Rating> ratings) {
+	public static String listToString1(List<Rating> ratings) {
 		JsonArray json = new JsonArray();
 		for (Rating rating : ratings) {
 			JsonObject item = new JsonObject();

@@ -148,11 +148,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         path?.getRouter()?.updateTitle(movie.title)
         titleView?.text = movie.title
         genreSection?.setContent(movie.genre)
-        if (movie.ratings.size > 0) {
+        /*if (movie.ratings.size > 0) {
             setRating(movie.ratings[0].value)
         } else {
             ratingView?.visibility = View.GONE
-        }
+        }*/
 
         directorSection?.setContent(" ${movie.director}")
         releaseSection?.setContent(" ${movie.released}")
@@ -286,8 +286,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
             private fun createPath(extras: Bundle): MoviePath {
                 val movieId = extras.getString(MOVIE_ID, "")
-                val movie = Movie()
-                movie.imdbId = movieId
+                val movie = Movie().copy(imdbId = movieId)
                 return MoviePath(movie)
             }
         }

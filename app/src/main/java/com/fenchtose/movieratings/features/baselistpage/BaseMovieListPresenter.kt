@@ -9,6 +9,7 @@ import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.update
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -17,7 +18,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         private val likeStore: LikeStore,
         protected val router: Router?): Presenter<V>() {
 
-    protected var data: ArrayList<Movie>? = null
+    protected var data: List<Movie>? = null
 
     @CallSuper
     override fun attachView(view: V) {
@@ -43,7 +44,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         subscribe(d)
     }
 
-    open protected fun updateData(movies: ArrayList<Movie>) {
+    open protected fun updateData(movies: List<Movie>) {
         this.data = movies
 
         val state = if (movies.isEmpty()) {
@@ -57,7 +58,9 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
 
     open fun toggleLike(movie: Movie) {
         likeStore.setLiked(movie.imdbId, !movie.liked)
-        movie.liked = !movie.liked
+        data?.let {
+            updateData(it.update(movie.copy(liked = !movie.liked)))
+        }
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {

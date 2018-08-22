@@ -45,12 +45,14 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
         return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
-    override fun showRemoved(movie: Movie, index: Int) {
+    override fun showRemoved(movies: List<Movie>, movie: Movie, index: Int) {
+        adapter?.updateData(movies)
         adapter?.notifyItemRemoved(index)
         showMovieRemoved(movie, index)
     }
 
-    override fun showAdded(movie: Movie, index: Int) {
+    override fun showAdded(movies: List<Movie>, movie: Movie, index: Int) {
+        adapter?.updateData(movies)
         adapter?.notifyItemInserted(index)
         recyclerView?.post {
             recyclerView?.scrollToPosition(index)

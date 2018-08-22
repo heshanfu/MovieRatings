@@ -5,5 +5,11 @@ import com.fenchtose.movieratings.model.entity.Movie
 
 interface UserPreferenceApplier {
     @WorkerThread
-    fun apply(movie: Movie)
+    fun applyPreference(movie: Movie): Movie
+}
+
+fun Collection<UserPreferenceApplier>.applyPreference(movie: Movie): Movie {
+    var updated = movie
+    forEach { updated = it.applyPreference(updated) }
+    return updated
 }

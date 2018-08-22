@@ -25,8 +25,8 @@ class PreferencesLikeStore(val context: Context) : LikeStore {
     }
 
     @WorkerThread
-    override fun apply(movie: Movie) {
-        movie.liked = isLiked(movie.imdbId)
+    override fun applyPreference(movie: Movie): Movie {
+        return movie.copy(liked = isLiked(movie.imdbId))
     }
 
     override fun export(): Single<List<Fav>> {

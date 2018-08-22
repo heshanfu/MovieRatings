@@ -150,6 +150,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         val resId = when(state) {
             is CollectionPage.OpState.Removed -> {
                 adapter?.let {
+                    it.updateData(state.movies)
                     if (it.itemCount > state.position) {
                         it.notifyItemRemoved(state.position)
                     } else {
@@ -161,6 +162,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
             is CollectionPage.OpState.RemoveError -> R.string.movie_collection_remove_movie_error
             is CollectionPage.OpState.Added-> {
+                adapter?.updateData(state.movies)
                 adapter?.notifyItemInserted(state.position)
                 R.string.movie_collection_add_movie_success
             }

@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.moviepage
 
 import android.content.Context
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.ResultBus
@@ -61,7 +60,7 @@ class MoviePresenter(private val provider: MovieProvider,
     private fun loadMovie(imdbId: String) {
         passedMovie?.let {
             @Suppress("UselessCallOnNotNull")
-            if (it.isComplete(Movie.Check.USER_PREFERENCES)) {
+            if (it.isComplete(Check.USER_PREFERENCES)) {
                 showMovie(passedMovie)
                 return
             } else if (!it.poster.isNullOrEmpty()) {
@@ -83,7 +82,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterNext {
-                    if (it.type == Constants.TitleType.SERIES.type) {
+                    if (it.movieType == Constants.TitleType.SERIES.type) {
                         getEpisodes(it, if (currentSeason <= 0) 1 else currentSeason)
                     }
                 }
@@ -101,7 +100,7 @@ class MoviePresenter(private val provider: MovieProvider,
     override fun selectSeason(season: Int) {
         season.takeIf { it != currentSeason }?.let {
             loadedMovie?.let {
-                it.takeIf { it.type == Constants.TitleType.SERIES.type }?.let {
+                it.takeIf { it.movieType == Constants.TitleType.SERIES.type }?.let {
                     getEpisodes(it, season)
                 }
             }
@@ -193,9 +192,9 @@ class MoviePresenter(private val provider: MovieProvider,
 
     fun likeToggle(): Boolean {
         loadedMovie?.let {
-            it.liked = !it.liked
-            likeStore.setLiked(it.imdbId, it.liked)
-            return it.liked
+            likeStore.setLiked(it.imdbId, !it.liked)
+            showMovie(it.copy(liked = !it.liked))
+            return !it.liked
         }
 
         return false

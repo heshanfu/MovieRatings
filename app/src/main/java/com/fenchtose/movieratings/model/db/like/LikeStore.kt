@@ -43,9 +43,7 @@ class LikeMiddleware(private val likeStore: LikeStore) {
                     likeStore.setLiked(it.movie.imdbId, it.liked)
                 }.observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    // TODO create a new copy!!
-                    it.movie.liked = it.liked
-                    dispatch(MovieLiked(it.movie))
+                    dispatch(MovieLiked(it.movie.copy(liked = it.liked)))
                 })
     }
 

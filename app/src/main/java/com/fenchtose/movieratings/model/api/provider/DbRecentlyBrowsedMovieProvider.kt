@@ -2,7 +2,9 @@ package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.model.entity.RecentlyBrowsedMovie
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.fenchtose.movieratings.model.db.applyPreference
 import com.fenchtose.movieratings.model.db.dao.MovieDao
+import com.fenchtose.movieratings.util.replace
 import io.reactivex.Observable
 
 class DbRecentlyBrowsedMovieProvider(private val movieDao: MovieDao): RecentlyBrowsedMovieProvider {
@@ -15,17 +17,15 @@ class DbRecentlyBrowsedMovieProvider(private val movieDao: MovieDao): RecentlyBr
                     .filter {
                         it.movies != null && it.movies!!.isNotEmpty()
                     }
-            }.doOnNext {
+            }.map {
                 it.map {
-                    it.movies?.takeIf { it.isNotEmpty() }?.let {
-                        it.map {
-                            for (preferenceApplier in preferenceAppliers) {
-                                preferenceApplier.apply(it)
-                            }
-                        }
+                    val movies = it.movies
+                    if (movies != null && movies.isNotEmpty()) {
+                        it.copy(movies = movies.replace(0, preferenceAppliers.applyPreference(movies[0])))
+                    } else {
+                        it
                     }
                 }
-
             }
     }
 

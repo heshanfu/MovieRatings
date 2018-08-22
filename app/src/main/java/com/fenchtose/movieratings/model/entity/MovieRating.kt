@@ -73,7 +73,7 @@ class MovieRating {
 
         fun fromMovie(movie: Movie): MovieRating {
             val rating = MovieRating()
-            movie.ratings.firstOrNull {
+            /*movie.ratings.firstOrNull {
                 it.source == "Internet Movie Database"
             }?.let {
                 rating.imdbId = movie.imdbId
@@ -90,7 +90,7 @@ class MovieRating {
 
                 rating.rating = it.value.split("/").firstOrNull()?.toFloatOrNull() ?:0f
                 rating.votes = movie.imdbVotes.replace(",","").toIntOrNull() ?: -1
-            }
+            }*/
 
             return rating
         }

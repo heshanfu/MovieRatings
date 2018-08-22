@@ -3,13 +3,11 @@ package com.fenchtose.movieratings.model.api.provider
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.analytics.events.Event
-import com.fenchtose.movieratings.model.entity.Episode
-import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.fenchtose.movieratings.model.db.applyPreference
 import com.fenchtose.movieratings.model.db.dao.MovieDao
+import com.fenchtose.movieratings.model.entity.*
 import com.fenchtose.movieratings.util.Constants
 import io.reactivex.Observable
 import retrofit2.Retrofit
@@ -59,7 +57,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                                             Observable.just(it)
                                         }
                                     }
-                                    .filter { it.isComplete(Movie.Check.BASE) }
+                                    .filter { it.isComplete(Check.BASE) }
                                     .doOnNext {
                                         dao.insert(it)
                                     }
@@ -67,11 +65,9 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
                         }
                 }
-                .filter { it.isComplete(Movie.Check.BASE) }
-                .doOnNext {
-                    for (preferenceApplier in preferenceAppliers) {
-                        preferenceApplier.apply(it)
-                    }
+                .filter { it.isComplete(Check.BASE) }
+                .map {
+                    preferenceAppliers.applyPreference(it)
                 }
 
     }
@@ -82,7 +78,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     private fun getMovieFromDb(title: String, year: String): Observable<Movie> {
         return Observable.defer {
             val movie = if (year.isNotEmpty()) dao.getMovie(title, year) else dao.getMovie(title)
-            if (movie != null && movie.isComplete(Movie.Check.BASE) && movie.ratings.size > 0) {
+            if (movie != null && movie.isComplete(Check.BASE) /*&& movie.ratings.size > 0*/) {
                 Observable.just(movie)
             } else {
                 Observable.just(Movie.empty())
@@ -93,7 +89,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     private fun getMovieFromDbWithImdb(imdbId: String): Observable<Movie> {
         return Observable.defer {
             val movie = dao.getMovieWithImdbId(imdbId)
-            if (movie != null && movie.isComplete(Movie.Check.EXTRA)) {
+            if (movie != null && movie.isComplete(Check.EXTRA)) {
                 Observable.just(movie)
             } else {
                 Observable.just(Movie.empty())
@@ -103,12 +99,10 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     override fun search(title: String, page: Int): Observable<SearchResult> {
         return api.search(BuildConfig.OMDB_API_KEY, title, page)
-                .doOnNext {
-                    it.results.map {
-                        for (preferenceApplier in preferenceAppliers) {
-                            preferenceApplier.apply(it)
-                        }
-                    }
+                .map {
+                    it.copy(results = it.results.map {
+                        preferenceAppliers.applyPreference(it)
+                    })
                 }
                 .doOnNext {
                     it.results.map {
@@ -118,8 +112,8 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     }
 
     override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
-        if (series.type != Constants.TitleType.SERIES.type) {
-            return Observable.error(Throwable("invalid title type ${series.type}"))
+        if (series.movieType != Constants.TitleType.SERIES.type) {
+            return Observable.error(Throwable("invalid title type ${series.movieType}"))
         }
 
         return getEpisodes(
@@ -167,10 +161,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                             }
                 }
         ).map {
-            for (preferenceApplier in preferenceAppliers) {
-                preferenceApplier.apply(it)
-            }
-            it
+            preferenceAppliers.applyPreference(it)
         }
     }
 

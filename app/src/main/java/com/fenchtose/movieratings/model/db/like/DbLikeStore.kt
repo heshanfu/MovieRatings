@@ -23,9 +23,8 @@ class DbLikeStore private constructor(private val likeDao: FavDao) : LikeStore {
     }
 
     @WorkerThread
-    override fun apply(movie: Movie) {
-        movie.liked = isLiked(movie.imdbId)
-        movie.appliedPreferences.liked = true
+    override fun applyPreference(movie: Movie): Movie {
+        return movie.copy(liked = isLiked(movie.imdbId), appliedPreferences = movie.appliedPreferences.copy(liked = true))
     }
 
     @WorkerThread

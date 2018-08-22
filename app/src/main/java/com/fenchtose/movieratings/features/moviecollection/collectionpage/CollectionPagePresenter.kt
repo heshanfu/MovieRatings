@@ -18,6 +18,8 @@ import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.FileUtils
 import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.add
+import com.fenchtose.movieratings.util.removeAt
 import io.reactivex.Observable
 
 class CollectionPagePresenter(likeStore: LikeStore,
@@ -80,8 +82,8 @@ class CollectionPagePresenter(likeStore: LikeStore,
                             data?.let {
                                 val index = it.indexOf(movie)
                                 if (index >= 0) {
-                                    val removed = it.removeAt(index)
-                                    getView()?.updateState(CollectionPage.OpState.Removed(removed, index))
+                                    val removed = it[index]
+                                    getView()?.updateState(CollectionPage.OpState.Removed(it.removeAt(index), removed, index))
                                     if (it.isEmpty()) {
                                         getView()?.updateState(BaseMovieListPage.State.Empty())
                                     }
@@ -108,15 +110,14 @@ class CollectionPagePresenter(likeStore: LikeStore,
                         data?.let {
                             val addedIndex = when {
                                 (index >= 0 && index < it.size) -> {
-                                    it.add(index, movie)
                                     index
                                 }
                                 else -> {
-                                    it.add(movie)
                                     it.size - 1
                                 }
                             }
-                            getView()?.updateState(CollectionPage.OpState.Added(movie, addedIndex))
+
+                            getView()?.updateState(CollectionPage.OpState.Added(it.add(addedIndex, movie), movie, addedIndex))
                         }
 
                     }, {

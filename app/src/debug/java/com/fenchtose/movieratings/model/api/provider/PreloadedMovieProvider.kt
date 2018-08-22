@@ -8,6 +8,7 @@ import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.fenchtose.movieratings.model.db.applyPreference
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.google.gson.Gson
 import io.reactivex.Observable
@@ -51,9 +52,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         return observable
                 .doOnNext {
                     it.results.map {
-                        for (preferenceApplier in preferenceAppliers) {
-                            preferenceApplier.apply(it)
-                        }
+                        preferenceAppliers.applyPreference(it)
                     }
                 }
                 .doOnNext {

@@ -8,6 +8,8 @@ import com.fenchtose.movieratings.model.api.provider.FavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.add
+import com.fenchtose.movieratings.util.removeAt
 import io.reactivex.Observable
 
 class LikesPresenter(
@@ -34,9 +36,8 @@ class LikesPresenter(
         data?.let {
             val index = it.indexOf(movie)
             if (index >= 0) {
-                it.removeAt(index)
                 likeStore.setLiked(movie.imdbId, false)
-                getView()?.showRemoved(movie, index)
+                getView()?.showRemoved(it.removeAt(index), movie, index)
             }
         }
     }
@@ -46,15 +47,13 @@ class LikesPresenter(
         data?.let {
             val addedIndex = when {
                 (index >= 0 && index < it.size) -> {
-                    it.add(index, movie)
                     index
                 }
                 else -> {
-                    it.add(movie)
                     it.size - 1
                 }
             }
-            getView()?.showAdded(movie, addedIndex)
+            getView()?.showAdded(it.add(addedIndex, movie), movie, addedIndex)
         }
     }
 
@@ -70,7 +69,7 @@ class LikesPresenter(
         }
     }
 
-    private fun getSorted(type: Sort, data: ArrayList<Movie>): List<Movie> = when(type) {
+    private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {
         Sort.YEAR -> data.sortedWith(compareByDescending { it.year })
         Sort.ALPHABETICAL -> data.sortedBy { it.title }
         else -> data

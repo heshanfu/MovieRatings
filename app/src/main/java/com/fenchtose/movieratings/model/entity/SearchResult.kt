@@ -1,17 +1,19 @@
 package com.fenchtose.movieratings.model.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-class SearchResult {
-    @SerializedName("Search")
-    var results: ArrayList<Movie> = ArrayList()
+@JsonClass(generateAdapter = true)
+data class SearchResult(
+    @Json(name="Search")
+    val results: List<Movie> = listOf(),
 
-    @SerializedName("totalResults")
-    var total: Int = 0
+    @Json(name="totalResults")
+    val total: Int = 0,
 
-    @SerializedName("Response")
-    var success: Boolean = false
+    @Json(name="Response")
+    val success: Boolean = false,
 
-    @SerializedName("Error")
-    var error: String = ""
-}
+    @Json(name="Error")
+    val error: String = ""
+)

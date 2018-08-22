@@ -11,8 +11,7 @@ class DbFavoriteMovieProvider(private val movieDao: MovieDao) : FavoriteMoviePro
             movieDao.getFavMovies() as ArrayList
         }.doOnNext {
             it.map {
-                it.liked = true
-                it.appliedPreferences.liked = true
+                it.copy(liked = true, appliedPreferences = it.appliedPreferences.copy(liked = true))
             }
         }
     }

@@ -75,9 +75,10 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
     }
 
     @WorkerThread
-    override fun apply(movie: Movie) {
-        movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }
-        movie.appliedPreferences.collections = true
+    override fun applyPreference(movie: Movie): Movie {
+        return movie.copy(appliedPreferences = movie.appliedPreferences.copy(collections = true)).apply {
+            collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }
+        }
     }
 
     override fun export(): Single<List<MovieCollection>> {

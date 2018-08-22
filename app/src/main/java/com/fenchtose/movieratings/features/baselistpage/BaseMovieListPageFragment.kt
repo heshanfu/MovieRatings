@@ -83,7 +83,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     private fun setData(movies: List<Movie>) {
         stateContent?.visibility = View.GONE
         recyclerView?.visibility = View.VISIBLE
-        adapter?.data = movies
+        adapter?.updateData(movies)
         adapter?.notifyDataSetChanged()
     }
 
